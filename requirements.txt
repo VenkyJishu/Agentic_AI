@@ -8,3 +8,7 @@ uvicorn
 groq
 streamlit
 openai
+pgvector
+sqlalchemy
+psycopg[binary]
+pypdf

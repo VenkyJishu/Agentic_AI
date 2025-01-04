@@ -1,0 +1,15 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual Environment
+ai-agent-env/
+.ai-agent-env/
+
+# Environment Variables
+.env
+
+# IDE specific
+.vscode/
+.idea/
