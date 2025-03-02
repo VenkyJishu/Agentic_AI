@@ -6,3 +6,4 @@ requests
 chromadb
 python-dotenv
 pysqlite3-binary
+chromadb==0.2.0 
