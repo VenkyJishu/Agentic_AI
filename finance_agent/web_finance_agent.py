@@ -10,7 +10,7 @@ load_dotenv()
 web_search_agent = Agent(
     name="Web Search Agent",
     role="Search the web for Information",
-    model=Groq(id="llama3-groq-70b-8192-tool-use-preview"),
+    model=Groq(id="llama-3.3-70b-versatile"),
     tools=[DuckDuckGo()],
     instructions=["Always include sources"],
     add_history_to_messages=True,
@@ -21,7 +21,7 @@ web_search_agent = Agent(
 finance_agent = Agent(
     name='Finance Agent',
     role="Provides finance info on stocks",
-    model=Groq(id="llama3-groq-70b-8192-tool-use-preview"),
+    model=Groq(id="llama-3.3-70b-versatile"),
     tools=[
         YFinanceTools(stock_price=True,analyst_recommendations=True,stock_fundamentals=True,company_news=True)        
     ],
@@ -34,7 +34,7 @@ finance_agent = Agent(
 
 multi_ai_agent=Agent(
     team=[web_search_agent,finance_agent],
-    model=Groq(id="llama3-groq-70b-8192-tool-use-preview"),
+    model=Groq(id="llama-3.3-70b-versatile"),
     instructions=["Always include sources","Use tables to display the data"],
     show_tool_calls=True,
     markdown=True,

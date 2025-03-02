@@ -12,3 +12,9 @@ pgvector
 sqlalchemy
 psycopg[binary]
 pypdf
+img2pdf
+dotenv
+phi
+openai
+crewai
+crewai-tools
