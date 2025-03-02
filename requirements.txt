@@ -3,8 +3,8 @@ crewai
 crewai_tools
 dotenv
 requests
-chromadb
+chromadb==0.2.0
 python-dotenv
 pysqlite3-binary
-chromadb==0.2.0 
-numpy==1.23.5
+numpy==1.21.6  # Compatible with chromadb 0.2.0
+setuptools
