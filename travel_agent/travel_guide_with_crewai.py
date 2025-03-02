@@ -2,7 +2,9 @@ import os
 from crewai import Agent,Task,Crew,Process, LLM
 from crewai_tools import SerperDevTool
 from dotenv import load_dotenv
-import streamlit as st 
+import streamlit as st
+import datetime
+
 load_dotenv()
 
 
@@ -21,7 +23,7 @@ llm = LLM(model="gemini/gemini-1.5-flash",
 # 🧭 Travel Researcher Agent (Finds historical sites + weather)
 researcher_agent = Agent(
     role="Travel Researcher",
-    goal="Find historical sites, public transport hotels, and real-time weather for {destination}.",
+    goal="Find historical sites, public transport hotels, and real-time weather for {destination}  from {start_date} to {end_date} .",
     verbose=True,
     memory=True,
     backstory="You are an expert travel researcher, providing up-to-date information about history-focused trips.",
@@ -33,7 +35,7 @@ researcher_agent = Agent(
 # 💰 Budget Planner Agent (Ensures trip stays under $1500)
 budget_planner_agent = Agent(
     role="Budget Planner",
-    goal="Find budget flights, hotels, and activities within {budget} for {destination}.",
+    goal="Find budget flights, hotels, and activities within {budget} for {destination}  from {start_date} to {end_date} .",
     verbose=True,
     memory=True,
     backstory="You are a skilled budget analyst ensuring trips fit within financial constraints.",
@@ -45,7 +47,7 @@ budget_planner_agent = Agent(
 # 🗺️ Itinerary Planner Agent (Creates a balanced 3-day plan)
 itinerary_planner_agent = Agent(
     role="Itinerary Planner",
-    goal="Create a 3-day itinerary for {destination}, ensuring all historical sites are covered under {budget}.",
+    goal="Create a  itinerary for {destination}, ensuring all historical sites are covered under {budget}  from {start_date} to {end_date}.",
     verbose=True,
     memory=True,
     backstory="You are an expert in trip planning, ensuring travelers get the best experience within their budget.",
@@ -58,7 +60,7 @@ itinerary_planner_agent = Agent(
 # Create the research_task  that the agent will perform
 research_task = Task(
     name="Research Trip Info",
-    description="Find historical sites, public transport hotels, and real-time weather for a given {destination} .",
+    description="Find historical sites, public transport hotels, and real-time weather for a given {destination}  from {start_date} to {end_date} .",
     expected_output="A list of top historical sites, a real-time weather update, and 3 hotel options near public transport.",
     tools =[search_tool],
     agent=researcher_agent
@@ -66,16 +68,18 @@ research_task = Task(
 
 # 💲 Budget Estimation Task
 budget_task = Task(
-    description="Find budget flights, hotel options, and daily food/transport costs for {destination}. Ensure total cost stays under {budget}.",
-    expected_output="A full cost breakdown (flights, hotel, food, attractions) ensuring a $1500 budget is maintained.",
+    name="Budget Estimation",
+    description="Find budget flights, hotel options, and daily food/transport costs for {destination}. Ensure total cost stays under {budget}  from {start_date} to {end_date}.",
+    expected_output="A full cost breakdown (flights, hotel, food, attractions) ensuring a {budget} budget is maintained.",
     tools=[search_tool],
     agent=budget_planner_agent
 )
 
 # 📅 Itinerary Planning Task
 itinerary_task = Task(
-    description="Plan a 3-day itinerary for {destination}, focusing on historical sites, budget constraints, and real-time weather conditions.",
-    expected_output="A detailed 3-day plan, considering weather and budget constraints, with transport recommendations.",
+    name="Itinerary Planning",
+    description="Plan a itinerary for {destination}, focusing on historical sites, budget constraints,and real-time weather conditions  from {start_date} to {end_date}.",
+    expected_output="A detailed plan, considering weather and budget constraints, with transport recommendations.",
     tools=[search_tool],
     agent=itinerary_planner_agent
 )
@@ -95,6 +99,9 @@ st.title("Travel Guide AI Assistant")
 destination = st.text_input("Enter the destination", "London")
 budget = st.number_input("Enter your budget (USD)", min_value=100, max_value=10000, value=1500)
 
+# Add date input fields for start and end dates
+start_date = st.date_input("Select your trip's start date", datetime.date(2025, 3, 1))
+end_date = st.date_input("Select your trip's end date", datetime.date(2025, 3, 5))
 
 # Show the steps for the user to interact with the agents
 st.subheader("Step 1: Research the Destination")
@@ -106,19 +113,21 @@ st.write("We will gather information about historical sites, weather, and hotels
 
 
 @st.cache_data
-def get_travel_info(destination, budget):
+def get_travel_info(destination, budget,start_date,end_date):
     # Here, you would normally call the crew system
-    result = crew.kickoff(inputs={'destination': destination, 'budget': str(budget)})
+    result = crew.kickoff(inputs={'destination': destination, 'budget': str(budget),
+                                  'start_date':str(start_date),'end_date':str(end_date)}
+                                  )
     return result
 
 # Button to start the process
 if st.button("Get Travel Info"):
     if destination and budget:
         # Run the CrewAI system
-        result = get_travel_info(destination, budget)
-        st.write(result)
+        result = get_travel_info(destination, budget,start_date,end_date)
+        #st.write(result)
         
-            # Assuming the structure of result is different, you'll need to adjust how you access it
+        # Assuming the structure of result is different, you'll need to adjust how you access it
         # If the structure is different, you'll need to use the correct key
         # If tasks are stored in a list or dictionary with task names as keys
         if isinstance(result, dict):
