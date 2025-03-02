@@ -5,4 +5,4 @@ dotenv
 requests
 chromadb
 python-dotenv
-pysqlite3
+pysqlite3-binary
