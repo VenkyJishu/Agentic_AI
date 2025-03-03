@@ -1,15 +1,23 @@
+
+__import__('pysqlite3')
+import sys
+
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+
+
 import os
 from crewai import Agent,Task,Crew,Process, LLM
 from crewai_tools import SerperDevTool
 from dotenv import load_dotenv
 import streamlit as st
 import datetime
-import pysqlite3 as sqlite3
+# import pysqlite3 as sqlite3
+import sqlite3
+from streamlit import logger
 
-__import__('pysqlite3')
-import sys
-
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+app_logger = logger.get_logger("travel_app")
+app_logger.info(f"sqlite version {sqlite3.sqlite_version}")
 
 
 load_dotenv()
