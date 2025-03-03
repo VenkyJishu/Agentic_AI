@@ -118,6 +118,7 @@ def get_travel_info(destination, budget,start_date,end_date):
     result = crew.kickoff(inputs={'destination': destination, 'budget': str(budget),
                                   'start_date':str(start_date),'end_date':str(end_date)}
                                   )
+    st.write(result)
     return result
 
 # Button to start the process
