@@ -158,17 +158,19 @@ if st.button("Get Travel Info"):
                       result = get_travel_info(destination, budget, start_date, end_date)
             st.write(result)   # Show the result after the process completes
                   
-            if isinstance(result, dict):
-                if 'tasks' in result:
-                    for task in result['tasks']:
-                        if task['name'] == 'Research Trip Info':
-                            st.subheader("Research Results")
-                            st.write(task['result'])
-                        elif task['name'] == 'Budget Estimation':
-                            st.subheader("Budget Planning")
-                            st.write(task['result'])
-                        elif task['name'] == 'Itinerary Planning':
-                            st.subheader("Itinerary")
-                            st.write(task['result'])
+            if isinstance(result, list):
+               for task_output in result:
+                  if isinstance(task_output, TaskOutput):
+            # You can now safely access the task_output properties like `task_output.name`
+                      if task_output.name == 'Research Trip Info':
+                          st.subheader("Research Results")
+                          st.write(task_output.raw)  # Display the raw result of this task
+                      elif task_output.name == 'Budget Estimation':
+                          st.subheader("Budget Planning")
+                          st.write(task_output.raw)  # Display the raw result of this task
+                      elif task_output.name == 'Itinerary Planning':
+                          st.subheader("Itinerary")
+                          st.write(task_output.raw)  # Display the raw result of this task
+
     except Exception as e:
         st.error(f"Error occurred: {e}")
