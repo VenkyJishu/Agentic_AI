@@ -28,6 +28,9 @@ os.environ['SERPER_API_KEY'] = os.getenv("SERPER_API_KEY")
 # Initialize a search tool (to fetch real-time travel info)
 search_tool = SerperDevTool()
 
+
+
+
 # Define the AI Model
 llm = LLM(model="gemini/gemini-1.5-flash",
           verbose=True,
@@ -114,8 +117,20 @@ destination = st.text_input("Enter the destination", "London")
 budget = st.number_input("Enter your budget (USD)", min_value=100, max_value=10000, value=1500)
 
 # Add date input fields for start and end dates
-start_date = st.date_input("Select your trip's start date", datetime.date(2025, 3, 1))
-end_date = st.date_input("Select your trip's end date", datetime.date(2025, 3, 5))
+start_date = st.date_input("Select your trip's start date")
+end_date = st.date_input("Select your trip's end date")
+
+# Get today's date
+today = datetime.date.today()
+
+
+# Show an error if the start date is in the past
+if start_date and start_date < today:
+    st.error("The start date cannot be in the past. Please select a future date.")
+
+# Ensure that the end date is after the start date
+if start_date and end_date and end_date < start_date:
+    st.error("The end date must be after the start date. Please select a valid end date.")
 
 # Show the steps for the user to interact with the agents
 st.subheader("Step 1: Research the Destination")
