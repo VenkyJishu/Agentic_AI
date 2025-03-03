@@ -112,7 +112,7 @@ st.write("We will gather information about historical sites, weather, and hotels
 
 
 
-@st.cache_data
+
 def get_travel_info(destination, budget,start_date,end_date):
     # Here, you would normally call the crew system
     result = crew.kickoff(inputs={'destination': destination, 'budget': str(budget),
