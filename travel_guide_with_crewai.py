@@ -22,7 +22,6 @@ app_logger.info(f"sqlite version {sqlite3.sqlite_version}")
 
 load_dotenv()
 
-
 os.environ['GEMINI_API_KEY'] = os.getenv("GEMINI_API_KEY")
 os.environ['SERPER_API_KEY'] = os.getenv("SERPER_API_KEY")
 
@@ -127,37 +126,34 @@ st.write("We will gather information about historical sites, weather, and hotels
 
 
 
-@st.cache_data
+
 def get_travel_info(destination, budget,start_date,end_date):
     # Here, you would normally call the crew system
     result = crew.kickoff(inputs={'destination': destination, 'budget': str(budget),
                                   'start_date':str(start_date),'end_date':str(end_date)}
                                   )
+    st.write(result)
     return result
 
 # Button to start the process
 if st.button("Get Travel Info"):
-    if destination and budget:
-        # Run the CrewAI system
-        result = get_travel_info(destination, budget,start_date,end_date)
-        #st.write(result)
-        
-        # Assuming the structure of result is different, you'll need to adjust how you access it
-        # If the structure is different, you'll need to use the correct key
-        # If tasks are stored in a list or dictionary with task names as keys
-        if isinstance(result, dict):
-    # Check if the task results are in a list of tasks
-            if 'tasks' in result:
-                for task in result['tasks']:
-                    if task['name'] == 'Research Trip Info':
-                        st.subheader("Research Results")
-                        st.write(task['result'])
-                    elif task['name'] == 'Budget Estimation':
-                        st.subheader("Budget Planning")
-                        st.write(task['result'])
-                    elif task['name'] == 'Itinerary Planning':
-                        st.subheader("Itinerary")
-                        st.write(task['result'])
-
-    else:
-        st.error("Please enter both a valid destination and a budget.")
+    try:
+        if destination and budget:
+            with st.spinner('Gathering travel information...'):                      
+                      result = get_travel_info(destination, budget, start_date, end_date)
+            st.write(result)   # Show the result after the process completes
+                  
+            if isinstance(result, dict):
+                if 'tasks' in result:
+                    for task in result['tasks']:
+                        if task['name'] == 'Research Trip Info':
+                            st.subheader("Research Results")
+                            st.write(task['result'])
+                        elif task['name'] == 'Budget Estimation':
+                            st.subheader("Budget Planning")
+                            st.write(task['result'])
+                        elif task['name'] == 'Itinerary Planning':
+                            st.subheader("Itinerary")
+                            st.write(task['result'])
+    except Exception as e:
+        st.error(f"Error occurred: {e}")
