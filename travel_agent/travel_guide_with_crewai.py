@@ -125,8 +125,10 @@ def get_travel_info(destination, budget,start_date,end_date):
 if st.button("Get Travel Info"):
     try:
         if destination and budget:
-            result = get_travel_info(destination, budget, start_date, end_date)
-            st.write(result)  # Debugging the result
+            with st.spinner('Gathering travel information...'):                      
+                      result = get_travel_info(destination, budget, start_date, end_date)
+            st.write(result)   # Show the result after the process completes
+                  
             if isinstance(result, dict):
                 if 'tasks' in result:
                     for task in result['tasks']:
